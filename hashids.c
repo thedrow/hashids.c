@@ -17,7 +17,7 @@ int hashids_errno;
 static void *
 hashids_alloc_f(size_t size)
 {
-    return calloc(size, 1);
+    return calloc(size, sizeof(wchar_t));
 }
 
 static void
@@ -90,7 +90,7 @@ hashids_init3(const wchar_t *salt, unsigned int min_hash_length,
     hashids_errno = HASHIDS_ERROR_OK;
 
     /* allocate the structure */
-    result = _hashids_alloc(sizeof(struct hashids_t));
+    result = malloc(sizeof(struct hashids_t));
     if (unlikely(!result)) {
         hashids_errno = HASHIDS_ERROR_ALLOC;
         return NULL;

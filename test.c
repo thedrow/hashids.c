@@ -59,12 +59,13 @@ struct testcase_t testcases[] = {
     {NULL, 0, NULL, 0, {0ull}, NULL}
 };
 
-char *failures[lengthof(testcases)];
+char * failures[lengthof(testcases)];
+wchar_t *w_failures[lengthof(testcases)];
 
 char *
 f(const char *fmt, ...)
 {
-    char *result = calloc(512, 1);
+    char *result = calloc(512, sizeof(char));
     va_list ap;
 
     if (!result) {
@@ -79,18 +80,36 @@ f(const char *fmt, ...)
     return result;
 }
 
+wchar_t *
+fw(const wchar_t *fmt, ...)
+{
+    wchar_t *result = calloc(512, sizeof(wchar_t));
+    va_list ap;
+
+    if (!result) {
+        printf("Fatal error: Cannot allocate memory for error description\n");
+        exit(EXIT_FAILURE);
+    }
+
+    va_start(ap, fmt);
+    vswprintf(result, 512, fmt, ap);
+    va_end(ap);
+
+    return result;
+}
+
 int
 main(int argc, char **argv)
 {
     struct hashids_t *hashids;
-    wchar_t buffer[256];
+    wchar_t buffer[1024];
     char *error = 0;
-    unsigned int i, j, result;
+    unsigned int i, j, k, result;
     unsigned long long numbers[16];
     struct testcase_t testcase;
 
     /* walk test cases */
-    for (i = 0, j = 0;; ++i) {
+    for (i = 0, j = 0, k = 0;; ++i) {
         bool success = true;
 
         if (i && i % 72 == 0) {
@@ -135,9 +154,9 @@ main(int argc, char **argv)
         result = hashids_encode(hashids, buffer, testcase.numbers_count,
             testcase.numbers);
 
-        if (wcscpy(buffer, testcase.expected_hash) != 0) {
+        if (wcscmp(buffer, testcase.expected_hash) != 0) {
             printf("F");
-            failures[j++] = f("#%d: hashids_encode() buffer %s does not match expected hash %s", i + 1, buffer,
+            w_failures[k++] = fw(L"hashids_encode() buffer %s does not match expected hash %s", buffer,
                               testcase.expected_hash);
             success = false;
         }
@@ -155,7 +174,7 @@ main(int argc, char **argv)
         /* decoding error */
         if (result != testcase.numbers_count) {
             printf("F");
-            failures[j++] = f("#%d: hashids_decode() returned %u", i + 1, result);
+            failures[j++] = f("hashids_decode() returned %u", i + 1, result);
             success = false;
         }
 
@@ -177,13 +196,19 @@ main(int argc, char **argv)
 
     for (i = 0; i < j; ++i) {
         printf("%s\n", failures[i]);
+        free(failures[i]);
     }
 
-    if (j) {
+    for (i = 0; i < k; ++i) {
+        wprintf(L"%s\n", w_failures[k]);
+        free(w_failures[k]);
+    }
+
+    if (j || k) {
         printf("\n");
     }
 
-    printf("%u samples, %u failures\n", lengthof(testcases) - 1, j);
+    printf("%u samples, %u failures\n", lengthof(testcases) - 1, j + k);
 
     return j ? EXIT_FAILURE : EXIT_SUCCESS;
 }
