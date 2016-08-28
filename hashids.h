@@ -17,18 +17,18 @@
 #define HASHIDS_GUARD_DIVISOR 12u
 
 /* default salt */
-#define HASHIDS_DEFAULT_SALT ""
+#define HASHIDS_DEFAULT_SALT L""
 
 /* default minimal hash length */
 #define HASHIDS_DEFAULT_MIN_HASH_LENGTH 0u
 
 /* default alphabet */
-#define HASHIDS_DEFAULT_ALPHABET "abcdefghijklmnopqrstuvwxyz" \
+#define HASHIDS_DEFAULT_ALPHABET L"abcdefghijklmnopqrstuvwxyz" \
                                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
                                  "1234567890"
 
 /* default separators */
-#define HASHIDS_DEFAULT_SEPARATORS "cfhistuCFHISTU"
+#define HASHIDS_DEFAULT_SEPARATORS L"cfhistuCFHISTU"
 
 /* minimal buffer size */
 #define HASHIDS_MIN_BUFFER_SIZE 64u
@@ -50,18 +50,18 @@ extern void (*_hashids_free)(void *ptr);
 
 /* the hashids "object" */
 struct hashids_t {
-    char *alphabet;
-    char *alphabet_copy_1;
-    char *alphabet_copy_2;
+    wchar_t *alphabet;
+    wchar_t *alphabet_copy_1;
+    wchar_t *alphabet_copy_2;
     unsigned int alphabet_length;
 
-    char *salt;
+    wchar_t *salt;
     unsigned int salt_length;
 
-    char *separators;
+    wchar_t *separators;
     unsigned int separators_count;
 
-    char *guards;
+    wchar_t *guards;
     unsigned int guards_count;
 
     unsigned int min_hash_length;
@@ -69,20 +69,20 @@ struct hashids_t {
 
 /* exported function definitions */
 void
-hashids_shuffle(char *str, size_t str_length, const char *salt, size_t salt_length);
+hashids_shuffle(wchar_t *str, size_t str_length, const wchar_t *salt, size_t salt_length);
 
 void
 hashids_free(struct hashids_t *hashids);
 
 struct hashids_t *
-hashids_init3(const char *salt, unsigned int min_hash_length,
-    const char *alphabet);
+hashids_init3(const wchar_t *salt, unsigned int min_hash_length,
+    const wchar_t *alphabet);
 
 struct hashids_t *
-hashids_init2(const char *salt, unsigned int min_hash_length);
+hashids_init2(const wchar_t *salt, unsigned int min_hash_length);
 
 struct hashids_t *
-hashids_init(const char *salt);
+hashids_init(const wchar_t *salt);
 
 unsigned int
 hashids_estimate_encoded_size(struct hashids_t *hashids,
@@ -93,29 +93,29 @@ hashids_estimate_encoded_size_v(struct hashids_t *hashids,
     const unsigned int numbers_count, ...);
 
 unsigned int
-hashids_encode(struct hashids_t *hashids, char *buffer,
+hashids_encode(struct hashids_t *hashids, wchar_t *buffer,
     const unsigned int numbers_count, const unsigned long long *numbers);
 
 unsigned int
-hashids_encode_v(struct hashids_t *hashids, char *buffer,
+hashids_encode_v(struct hashids_t *hashids, wchar_t *buffer,
     unsigned int numbers_count, ...);
 
 unsigned int
-hashids_encode_one(struct hashids_t *hashids, char *buffer,
+hashids_encode_one(struct hashids_t *hashids, wchar_t *buffer,
     const unsigned long long number);
 
 unsigned int
-hashids_numbers_count(struct hashids_t *hashids, char *str);
+hashids_numbers_count(struct hashids_t *hashids, wchar_t *str);
 
 unsigned int
-hashids_decode(struct hashids_t *hashids, char *str,
+hashids_decode(struct hashids_t *hashids, wchar_t *str,
     unsigned long long *numbers);
 
 unsigned int
-hashids_encode_hex(struct hashids_t *hashids, char *buffer,
-    const char *hex_str);
+hashids_encode_hex(struct hashids_t *hashids, wchar_t *buffer,
+    const wchar_t *hex_str);
 
 unsigned int
-hashids_decode_hex(struct hashids_t *hashids, char *str, char *output);
+hashids_decode_hex(struct hashids_t *hashids, wchar_t *str, wchar_t *output);
 
 #endif

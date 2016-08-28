@@ -34,7 +34,7 @@ You'll definetely need to call this function when something goes wrong or you're
 
 ``` c
 struct hashids_t *
-hashids_init3(const char *salt, unsigned int min_hash_length, const char *alphabet);
+hashids_init3(const wchar_t *salt, unsigned int min_hash_length, const wchar_t *alphabet);
 ```
 
 The most common initializer.
@@ -50,7 +50,7 @@ hashids = hashids_init3("this is my salt", 0, HASHIDS_DEFAULT_ALPHABET);
 
 ``` c
 struct hashids_t *
-hashids_init2(const char *salt, unsigned int min_hash_length);
+hashids_init2(const wchar_t *salt, unsigned int min_hash_length);
 ```
 
 The same as `hashids_init3` but without the `alpabet` parameter.
@@ -60,7 +60,7 @@ Will use `HASHIDS_DEFAULT_ALPHABET` as alphabet.
 
 ``` c
 struct hashids_t *
-hashids_init(const char *salt);
+hashids_init(const wchar_t *salt);
 ```
 
 The same as `hashids_init2` but using `0` as `min_hash_length`.
@@ -104,7 +104,7 @@ bytes_needed = hashids_estimate_encoded_size_v(hashids, 5, 1ull, 2ull, 3ull, 4ul
 
 ``` c
 unsigned int
-hashids_encode(struct hashids_t *hashids, char *buffer, unsigned int numbers_count, unsigned long long *numbers);
+hashids_encode(struct hashids_t *hashids, wchar_t *buffer, unsigned int numbers_count, unsigned long long *numbers);
 ```
 
 The common encoding encoder.
@@ -128,7 +128,7 @@ bytes_encoded = hashids_encode(hashids, hash, sizeof(numbers2) / sizeof(unsigned
 
 ``` c
 unsigned int
-hashids_encode_v(struct hashids_t *hashids, char *buffer, unsigned int numbers_count, ...);
+hashids_encode_v(struct hashids_t *hashids, wchar_t *buffer, unsigned int numbers_count, ...);
 ```
 
 The variadic variant of `hashids_encode`.
@@ -146,7 +146,7 @@ bytes_encoded = hashids_encode_v(hashids, hash, 5, 1ull, 2ull, 3ull, 4ull, 5ull)
 
 ``` c
 unsigned int
-hashids_encode_one(struct hashids_t *hashids, char *buffer, unsigned long long number);
+hashids_encode_one(struct hashids_t *hashids, wchar_t *buffer, unsigned long long number);
 ```
 
 A shorthand function encoding just one `ULONGLONG`.
@@ -162,7 +162,7 @@ bytes_encoded = hashids_encode_one(hashids, hash, 12345);
 
 ``` c
 unsigned int
-hashids_numbers_count(struct hashids_t *hashids, char *str);
+hashids_numbers_count(struct hashids_t *hashids, wchar_t *str);
 ```
 
 If you thought that encoding is easy, think again.
@@ -184,7 +184,7 @@ unsigned int numbers_count = hashids_numbers_count(hashids, "zoHWuNhktp");
 
 ``` c
 unsigned int
-hashids_decode(struct hashids_t *hashids, char *str, unsigned long long *numbers);
+hashids_decode(struct hashids_t *hashids, wchar_t *str, unsigned long long *numbers);
 ```
 
 The common decoding decoder.
@@ -203,7 +203,7 @@ result = hashids_decode(hashids, "p2xkL3CK33JjcrrZ8vsw4YRZueZX9k", numbers);
 
 ``` c
 unsigned int
-hashids_encode_hex(struct hashids_t *hashids, char *buffer, const char *hex_str);
+hashids_encode_hex(struct hashids_t *hashids, wchar_t *buffer, const wchar_t *hex_str);
 ```
 
 Encodes a hex string rather than a number.
@@ -219,7 +219,7 @@ bytes_encoded = hashids_encode_hex(hashids, hash, "C0FFEE");
 
 ``` c
 unsigned int
-hashids_decode_hex(struct hashids_t *hashids, char *str, char *output);
+hashids_decode_hex(struct hashids_t *hashids, wchar_t *str, wchar_t *output);
 ```
 
 Decodes a hash to a hex string rather than to a number.
