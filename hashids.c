@@ -248,7 +248,7 @@ hashids_init(const char *salt)
 /* estimate buffer size (generic) */
 unsigned int
 hashids_estimate_encoded_size(struct hashids_t *hashids,
-    unsigned int numbers_count, unsigned long long *numbers)
+    const unsigned int numbers_count, const unsigned long long *numbers)
 {
     unsigned int result_len, i;
 
@@ -285,7 +285,7 @@ hashids_estimate_encoded_size(struct hashids_t *hashids,
 /* estimate buffer size (variadic) */
 unsigned int
 hashids_estimate_encoded_size_v(struct hashids_t *hashids,
-    unsigned int numbers_count, ...)
+    const unsigned int numbers_count, ...)
 {
     int i;
     unsigned int result;
@@ -314,7 +314,7 @@ hashids_estimate_encoded_size_v(struct hashids_t *hashids,
 /* encode many (generic) */
 unsigned int
 hashids_encode(struct hashids_t *hashids, char *buffer,
-    unsigned int numbers_count, unsigned long long *numbers)
+    const unsigned int numbers_count, const unsigned long long *numbers)
 {
     /* bail out if no numbers */
     if (unlikely(!numbers_count)) {
@@ -483,7 +483,7 @@ hashids_encode_v(struct hashids_t *hashids, char *buffer,
 /* encode one */
 unsigned int
 hashids_encode_one(struct hashids_t *hashids, char *buffer,
-    unsigned long long number)
+    const unsigned long long number)
 {
     return hashids_encode(hashids, buffer, 1, &number);
 }

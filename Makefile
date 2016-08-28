@@ -1,10 +1,10 @@
 all: main test
 
 main: main.o hashids.o
-	$(CC) -O3 -ljemalloc -o hashids main.o hashids.o -lm
+	$(CC) -O3 -fslp-vectorize-aggressive -Rpass=loop-vectorize -Rpass-missed=loop-vectorize -Rpass-analysis=loop-vectorize -o hashids main.o hashids.o -lm
 
 test: test.o hashids.o
-	$(CC) -O3 -ljemalloc -o test test.o hashids.o -lm
+	$(CC) -O3 -o test test.o hashids.o -lm
 
 main.o: main.c hashids.o
 	$(CC) -c -o main.o main.c

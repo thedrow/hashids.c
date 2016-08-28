@@ -86,15 +86,15 @@ hashids_init(const char *salt);
 
 unsigned int
 hashids_estimate_encoded_size(struct hashids_t *hashids,
-    unsigned int numbers_count, unsigned long long *numbers);
+    const unsigned int numbers_count, const unsigned long long *numbers);
 
 unsigned int
 hashids_estimate_encoded_size_v(struct hashids_t *hashids,
-    unsigned int numbers_count, ...);
+    const unsigned int numbers_count, ...);
 
 unsigned int
 hashids_encode(struct hashids_t *hashids, char *buffer,
-    unsigned int numbers_count, unsigned long long *numbers);
+    const unsigned int numbers_count, const unsigned long long *numbers);
 
 unsigned int
 hashids_encode_v(struct hashids_t *hashids, char *buffer,
@@ -102,7 +102,7 @@ hashids_encode_v(struct hashids_t *hashids, char *buffer,
 
 unsigned int
 hashids_encode_one(struct hashids_t *hashids, char *buffer,
-    unsigned long long number);
+    const unsigned long long number);
 
 unsigned int
 hashids_numbers_count(struct hashids_t *hashids, char *str);
