@@ -30,10 +30,9 @@ void (*_hashids_free)(void *ptr) = hashids_free_f;
 
 /* shuffle */
 void
-hashids_shuffle(char *str, size_t str_length, char *salt, size_t salt_length)
+hashids_shuffle(char *str, size_t str_length, const char *salt, size_t salt_length)
 {
-    size_t i, j, v, p;
-    char temp;
+    size_t i, v, p;
 
     if (!salt_length) {
         return;
@@ -42,9 +41,9 @@ hashids_shuffle(char *str, size_t str_length, char *salt, size_t salt_length)
     for (i = str_length - 1, v = 0, p = 0; i > 0; --i, ++v) {
         v %= salt_length;
         p += salt[v];
-        j = (salt[v] + v + p) % i;
+        size_t j = (salt[v] + v + p) % i;
 
-        temp = str[i];
+        char temp = str[i];
         str[i] = str[j];
         str[j] = temp;
     }
@@ -85,7 +84,7 @@ hashids_init3(const char *salt, unsigned int min_hash_length,
 {
     struct hashids_t *result;
     unsigned int i, j;
-    char ch, *p;
+    char ch;
 
     hashids_errno = HASHIDS_ERROR_OK;
 
@@ -147,6 +146,7 @@ hashids_init3(const char *salt, unsigned int min_hash_length,
 
     /* non-alphabet characters cannot be separators */
     for (i = 0, j = 0; i < strlen(HASHIDS_DEFAULT_SEPARATORS); ++i) {
+        char *p;
         ch = HASHIDS_DEFAULT_SEPARATORS[i];
         if ((p = strchr(result->alphabet, ch))) {
             result->separators[j++] = ch;
@@ -251,13 +251,12 @@ hashids_estimate_encoded_size(struct hashids_t *hashids,
     unsigned int numbers_count, unsigned long long *numbers)
 {
     unsigned int result_len, i;
-    unsigned long long number;
 
     /* start from 1 - the lottery character */
     result_len = 1;
 
     for (i = 0; i < numbers_count; ++i) {
-        number = numbers[i];
+        unsigned long long number = numbers[i];
 
         /* how long is the hash */
         do {
@@ -324,11 +323,10 @@ hashids_encode(struct hashids_t *hashids, char *buffer,
         return 0;
     }
 
-    unsigned int i, j, result_len, guard_index, half_length_floor,
-        half_length_ceil;
-    unsigned long long number, number_copy, numbers_hash;
-    int p_max, excess;
-    char lottery, ch, temp_ch, *p, *buffer_end, *buffer_temp;
+    unsigned int i, j, result_len;
+    unsigned long long number, numbers_hash;
+    int p_max;
+    char lottery, ch, temp_ch, *p, *buffer_end;
 
     /* return an estimation if no buffer */
     if (unlikely(!buffer)) {
@@ -368,7 +366,7 @@ hashids_encode(struct hashids_t *hashids, char *buffer,
 
     for (i = 0; i < numbers_count; ++i) {
         /* take number */
-        number = number_copy = numbers[i];
+        unsigned long long number_copy = number = numbers[i];
 
         /* create a salt for this iteration */
         if (p_max > 0) {
@@ -380,7 +378,7 @@ hashids_encode(struct hashids_t *hashids, char *buffer,
             hashids->alphabet_copy_2, hashids->alphabet_length);
 
         /* hash the number */
-        buffer_temp = buffer_end;
+        char *buffer_temp = buffer_end;
         do {
             ch = hashids->alphabet_copy_1[number % hashids->alphabet_length];
             *buffer_end++ = ch;
@@ -408,7 +406,7 @@ hashids_encode(struct hashids_t *hashids, char *buffer,
 
     /* add guards before start padding with alphabet */
     if (result_len < hashids->min_hash_length) {
-        guard_index = (numbers_hash + buffer[0]) % hashids->guards_count;
+        unsigned int guard_index = (numbers_hash + buffer[0]) % hashids->guards_count;
         memmove(buffer + 1, buffer, result_len);
         buffer[0] = hashids->guards[guard_index];
         ++result_len;
@@ -419,6 +417,7 @@ hashids_encode(struct hashids_t *hashids, char *buffer,
             ++result_len;
 
             /* pad with half alphabet before and after */
+            unsigned int half_length_floor, half_length_ceil;
             half_length_floor = floor((float)hashids->alphabet_length / 2);
             half_length_ceil = ceil((float)hashids->alphabet_length / 2);
 
@@ -437,7 +436,7 @@ hashids_encode(struct hashids_t *hashids, char *buffer,
                     hashids->alphabet_copy_1, half_length_floor);
 
                 result_len += hashids->alphabet_length;
-                excess = result_len - hashids->min_hash_length;
+                int excess = result_len - hashids->min_hash_length;
 
                 if (excess > 0) {
                     memmove(buffer, buffer + excess / 2,

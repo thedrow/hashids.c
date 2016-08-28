@@ -1,10 +1,10 @@
 all: main test
 
 main: main.o hashids.o
-	$(CC) -O3 -o hashids main.o hashids.o -lm
+	$(CC) -O3 -ljemalloc -o hashids main.o hashids.o -lm
 
 test: test.o hashids.o
-	$(CC) -o test test.o hashids.o -lm
+	$(CC) -O3 -ljemalloc -o test test.o hashids.o -lm
 
 main.o: main.c hashids.o
 	$(CC) -c -o main.o main.c
