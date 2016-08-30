@@ -53,18 +53,18 @@ struct hashids_t {
     wchar_t *alphabet;
     wchar_t *alphabet_copy_1;
     wchar_t *alphabet_copy_2;
-    unsigned int alphabet_length;
+    unsigned long alphabet_length;
 
     wchar_t *salt;
-    unsigned int salt_length;
+    unsigned long salt_length;
 
     wchar_t *separators;
-    unsigned int separators_count;
+    unsigned long separators_count;
 
     wchar_t *guards;
-    unsigned int guards_count;
+    unsigned long guards_count;
 
-    unsigned int min_hash_length;
+    unsigned long min_hash_length;
 };
 
 /* exported function definitions */
@@ -84,38 +84,38 @@ hashids_init2(const wchar_t *salt, unsigned int min_hash_length);
 struct hashids_t *
 hashids_init(const wchar_t *salt);
 
-unsigned int
+unsigned long
 hashids_estimate_encoded_size(struct hashids_t *hashids,
-    const unsigned int numbers_count, const unsigned long long *numbers);
+    const unsigned long numbers_count, const unsigned long long *numbers);
 
-unsigned int
+unsigned long
 hashids_estimate_encoded_size_v(struct hashids_t *hashids,
-    const unsigned int numbers_count, ...);
+    const unsigned long numbers_count, ...);
 
-unsigned int
+unsigned long
 hashids_encode(struct hashids_t *hashids, wchar_t *buffer,
-    const unsigned int numbers_count, const unsigned long long *numbers);
+    const unsigned long numbers_count, const unsigned long long *numbers);
 
-unsigned int
+unsigned long
 hashids_encode_v(struct hashids_t *hashids, wchar_t *buffer,
-    unsigned int numbers_count, ...);
+    unsigned long numbers_count, ...);
 
-unsigned int
+unsigned long
 hashids_encode_one(struct hashids_t *hashids, wchar_t *buffer,
     const unsigned long long number);
 
-unsigned int
+unsigned long
 hashids_numbers_count(struct hashids_t *hashids, wchar_t *str);
 
-unsigned int
+unsigned long
 hashids_decode(struct hashids_t *hashids, wchar_t *str,
     unsigned long long *numbers);
 
-unsigned int
+unsigned long
 hashids_encode_hex(struct hashids_t *hashids, wchar_t *buffer,
     const wchar_t *hex_str);
 
-unsigned int
+unsigned long
 hashids_decode_hex(struct hashids_t *hashids, wchar_t *str, wchar_t *output);
 
 #endif

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <signal.h>
 
 #include "hashids.h"
 
@@ -55,12 +56,15 @@ struct testcase_t testcases[] = {
     {L"this is my salt", 0, HASHIDS_DEFAULT_ALPHABET, 10, {1ull,2ull,3ull,4ull,5ull,6ull,7ull,8ull,9ull,10ull}, L"kRHnurhptKcjIDTWC3sx"},
 
     {L"this is my salt", 0, L"cfhistuCFHISTU+-", 1, {1337ull}, L"+-+-++---++-"},
+    {L"", 0, L"\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x90\x91\x92\x93\x94\x95\x96", 1, {1ull}, L"\x87\x89"},
 
     {NULL, 0, NULL, 0, {0ull}, NULL}
 };
 
 char * failures[lengthof(testcases)];
 wchar_t *w_failures[lengthof(testcases)];
+unsigned int i, j, k;
+bool success = true;
 
 char *
 f(const char *fmt, ...)
@@ -98,19 +102,56 @@ fw(const wchar_t *fmt, ...)
     return result;
 }
 
+void report_result() {
+  printf("\n\n");
+
+  for (int l = 0; l < j; ++l) {
+      printf("%s\n", failures[l]);
+      free(failures[i]);
+  }
+
+  for (int l = 0; l < k; ++l) {
+      wprintf(L"%s\n", w_failures[l]);
+      free(w_failures[k]);
+  }
+
+  if (j || k) {
+      printf("\n");
+  }
+
+  printf("%u/%u samples, %u failures\n", i, lengthof(testcases) - 1, j + k);
+}
+
+static void handler(int sig, siginfo_t *siginfo, void *dont_care_either)
+{
+   if (siginfo->si_signo == SIGSEGV) {
+       printf("\n#%d: Segfault", i + 1);
+       j++;
+       success = false;
+   }
+   report_result();
+   exit(1);
+}
+
 int
 main(int argc, char **argv)
 {
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sigaction));
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags     = SA_NODEFER;
+    sa.sa_sigaction = &handler;
+    sigaction(SIGSEGV, &sa, NULL);
+
     struct hashids_t *hashids;
     wchar_t buffer[1024];
     char *error = 0;
-    unsigned int i, j, k, result;
+    unsigned long result;
     unsigned long long numbers[16];
     struct testcase_t testcase;
 
     /* walk test cases */
     for (i = 0, j = 0, k = 0;; ++i) {
-        bool success = true;
 
         if (i && i % 72 == 0) {
             printf("\n");
@@ -192,23 +233,7 @@ main(int argc, char **argv)
         hashids_free(hashids);
     }
 
-    printf("\n\n");
-
-    for (i = 0; i < j; ++i) {
-        printf("%s\n", failures[i]);
-        free(failures[i]);
-    }
-
-    for (i = 0; i < k; ++i) {
-        wprintf(L"%s\n", w_failures[k]);
-        free(w_failures[k]);
-    }
-
-    if (j || k) {
-        printf("\n");
-    }
-
-    printf("%u samples, %u failures\n", lengthof(testcases) - 1, j + k);
+    report_result();
 
     return j ? EXIT_FAILURE : EXIT_SUCCESS;
 }
