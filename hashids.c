@@ -1,8 +1,6 @@
 #include <stdio.h>
-#include <string.h>
 #include <wchar.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <math.h>
 
 #include "hashids.h"
@@ -90,7 +88,7 @@ hashids_init3(const wchar_t *salt, unsigned int min_hash_length,
     hashids_errno = HASHIDS_ERROR_OK;
 
     /* allocate the structure */
-    result = malloc(sizeof(struct hashids_t));
+    result = calloc(sizeof(struct hashids_t), 1);
     if (unlikely(!result)) {
         hashids_errno = HASHIDS_ERROR_ALLOC;
         return NULL;
