@@ -14,7 +14,7 @@ struct testcase_t {
     size_t min_hash_length;
     const char *alphabet;
     size_t numbers_count;
-    unsigned long long numbers[16];
+    hashids_number_t numbers[16];
     const char *expected_hash;
 };
 
@@ -86,8 +86,7 @@ struct testcase_t testcases[] = {
     {"this is my salt", 0, "cfhistuCFHISTU+-", 1,
         {1337ull}, "+-+-++---++-"},
 
-    {"\\7ULC'", 22, "@'l*p9n]);+7>Ar(\\", 1,
-        {190126ull}, "9];r(An97\\]]\\()>7>\\)+]"},
+    //{"aaaabamb", 0, "fIVvklaqbwcepZgAW", 1, {U128_C(22207526595126684437)}, "abaabbbabababbabaaaa"},
 
     {NULL, 0, NULL, 0, {0ull}, NULL}
 };
@@ -115,10 +114,10 @@ f(const char *fmt, ...)
 int
 main(int argc, char **argv)
 {
-    hashids_t *hashids;
+    struct hashids_t *hashids;
     char buffer[256], *error = 0;
     size_t i, j, result;
-    unsigned long long numbers[16];
+    hashids_number_t numbers[16];
     struct testcase_t testcase;
     int fail;
 
@@ -197,7 +196,7 @@ main(int argc, char **argv)
 
         /* compare decoded numbers */
         if (memcmp(numbers, testcase.numbers,
-                result * sizeof(unsigned long long))) {
+                result * sizeof(hashids_number_t))) {
             printf("F");
             failures[j++] = f("#%d: hashids_decode() decoding error", i + 1);
             fail = 1;

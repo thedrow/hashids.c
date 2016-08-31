@@ -30,7 +30,7 @@ If you want to roll your own allocator, [look here](#memory-allocation).
 
 ### API
 
-The C version of Hashids works (presumably, and only) with `unsigned long long` arguments.
+The C version of Hashids works (presumably, and only) with `hashids_number_t` arguments.
 Negative (signed) integers are, by design, treated as very big unsigned ones.
 
 Note: The API has changed a bit since version 1.1.0. `hashids_t` is now a type alias of `struct hashids_t`.
@@ -95,8 +95,8 @@ If you pass `NULL` for `salt` the `HASHIDS_DEFAULT_SALT` will be used (currently
 #### hashids_estimate_encoded_size
 
 ``` c
-size_t
-hashids_estimate_encoded_size(hashids_t *hashids, size_t numbers_count, unsigned long long *numbers);
+unsigned int
+hashids_estimate_encoded_size(struct hashids_t *hashids, unsigned int numbers_count, hashids_number_t *numbers);
 ```
 
 Since we have no idea how much bytes an encoded `ULONGLONG` will take, there's this (pessimistic) function:
@@ -104,9 +104,9 @@ Since we have no idea how much bytes an encoded `ULONGLONG` will take, there's t
 Example:
 
 ``` c
-unsigned long long numbers[] = {1ull, 2ull, 3ull, 4ull, 5ull};
-size_t bytes_needed;
-bytes_needed = hashids_estimate_encoded_size(hashids, sizeof(numbers) / sizeof(unsigned long long), numbers);
+hashids_number_t numbers[] = {1ull, 2ull, 3ull, 4ull, 5ull};
+unsigned int bytes_needed;
+bytes_needed = hashids_estimate_encoded_size(hashids, sizeof(numbers) / sizeof(hashids_number_t), numbers);
 /* bytes_needed => 12 */
 ```
 
@@ -129,8 +129,8 @@ bytes_needed = hashids_estimate_encoded_size_v(hashids, 5, 1ull, 2ull, 3ull, 4ul
 #### hashids_encode
 
 ``` c
-size_t
-hashids_encode(hashids_t *hashids, char *buffer, size_t numbers_count, unsigned long long *numbers);
+unsigned int
+hashids_encode(struct hashids_t *hashids, char *buffer, unsigned int numbers_count, hashids_number_t *numbers);
 ```
 
 The common encoding encoder.
@@ -142,12 +142,12 @@ Example:
 ``` c
 size_t bytes_encoded;
 char hash[512];
-unsigned long long numbers[] = {1ull};
-bytes_encoded = hashids_encode(hashids, hash, sizeof(numbers) / sizeof(unsigned long long), numbers);
+hashids_number_t numbers[] = {1ull};
+bytes_encoded = hashids_encode(hashids, hash, sizeof(numbers) / sizeof(hashids_number_t), numbers);
 /* hash => "NV", bytes_encoded => 2 */
-unsigned long long numbers2[] = {1ull, 2ull, 3ull, 4ull, 5ull};
-bytes_encoded = hashids_encode(hashids, hash, sizeof(numbers2) / sizeof(unsigned long long), numbers2);
-/* hash => "ADf9h9i0sQ", bytes_encoded => 10 */
+hashids_number_t numbers2[] = {1ull, 2ull, 3ull, 4ull, 5ull};
+bytes_encoded = hashids_encode(hashids, hash, sizeof(numbers2) / sizeof(hashids_number_t), numbers2);
+/* hash => "zoHWuNhktp", bytes_encoded => 10 */
 ```
 
 #### hashids_encode_v
@@ -171,8 +171,8 @@ bytes_encoded = hashids_encode_v(hashids, hash, 5, 1ull, 2ull, 3ull, 4ull, 5ull)
 #### hashids_encode_one
 
 ``` c
-size_t
-hashids_encode_one(hashids_t *hashids, char *buffer, unsigned long long number);
+unsigned int
+hashids_encode_one(struct hashids_t *hashids, char *buffer, hashids_number_t number);
 ```
 
 A shorthand function encoding just one `ULONGLONG`.
@@ -191,9 +191,13 @@ size_t
 hashids_numbers_count(hashids_t *hashids, char *str);
 ```
 
-Returns how many `ULONGLONG`s are encoded in a string.
-If the function returns `0`, the hash is probably hashed with a different salt/alphabet.
-It's up to you to allocate `result * sizeof(unsigned long long)` memory yourself.
+If you thought that encoding is easy, think again.
+Decoding is just as tough as encoding is - you'll have to manage the memory yourself.
+Luckily, we thought about that too.
+
+This nice function will tell you how much `ULONGLONG`s are hashed in the hash you'll be decoding.
+If the function returns `0`, the hash is probably hashed with a different salt.
+It's up to you to allocate `result * sizeof(hashids_number_t)` enough memory yourself.
 
 Example:
 
@@ -205,8 +209,8 @@ size_t numbers_count = hashids_numbers_count(hashids, "ADf9h9i0sQ");
 #### hashids_decode
 
 ``` c
-size_t
-hashids_decode(hashids_t *hashids, char *str, unsigned long long *numbers);
+unsigned int
+hashids_decode(struct hashids_t *hashids, char *str, hashids_number_t *numbers);
 ```
 
 The common decoding decoder.
@@ -216,8 +220,8 @@ If the function returns `0`, the hash is probably hashed with a different salt/a
 Example:
 
 ``` c
-unsigned long long numbers[5];
-result = hashids_decode(hashids, "QkoW1vt955nxCVVjZDt5VD2PTgBP72", numbers);
+hashids_number_t numbers[5];
+result = hashids_decode(hashids, "p2xkL3CK33JjcrrZ8vsw4YRZueZX9k", numbers);
 /* numbers = {21979508, 35563591, 57543099, 93106690, 150649789}, result => 5 */
 ```
 
@@ -249,8 +253,8 @@ Decodes a hash to a hex string rather than to a number.
 Example:
 
 ``` c
-char str[18];   /* sizeof(unsigned long long) * 2 + 2 */
-result = hashids_decode_hex(hashids, "k7AVov", str);
+char str[18];   /* sizeof(hashids_number_t) * 2 + 2 */
+result = hashids_decode_hex(hashids, "6N6LO4", str);
 /* str => "C0FFEE", result => 1 */
 ```
 

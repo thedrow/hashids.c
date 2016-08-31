@@ -1,6 +1,10 @@
 #ifndef HASHIDS_H
 #define HASHIDS_H 1
 
+#include <stdint.h>
+
+typedef uintmax_t hashids_number_t;
+
 /* version constants */
 #define HASHIDS_VERSION "1.0.1"
 #define HASHIDS_VERSION_MAJOR 1
@@ -49,7 +53,7 @@ extern void *(*_hashids_alloc)(size_t size);
 extern void (*_hashids_free)(void *ptr);
 
 /* the hashids "object" */
-struct hashids_s {
+struct hashids_t {
     char *alphabet;
     char *alphabet_copy_1;
     char *alphabet_copy_2;
@@ -66,57 +70,56 @@ struct hashids_s {
 
     size_t min_hash_length;
 };
-typedef struct hashids_s hashids_t;
 
 /* exported function definitions */
 void
 hashids_shuffle(char *str, size_t str_length, char *salt, size_t salt_length);
 
 void
-hashids_free(hashids_t *hashids);
+hashids_free(struct hashids_t *hashids);
 
-hashids_t *
+struct hashids_t *
 hashids_init3(const char *salt, size_t min_hash_length,
     const char *alphabet);
 
-hashids_t *
+struct hashids_t *
 hashids_init2(const char *salt, size_t min_hash_length);
 
-hashids_t *
+struct hashids_t *
 hashids_init(const char *salt);
 
 size_t
-hashids_estimate_encoded_size(hashids_t *hashids,
-    size_t numbers_count, unsigned long long *numbers);
+hashids_estimate_encoded_size(struct hashids_t *hashids,
+    size_t numbers_count, hashids_number_t *numbers);
 
 size_t
-hashids_estimate_encoded_size_v(hashids_t *hashids,
+hashids_estimate_encoded_size_v(struct hashids_t *hashids,
     size_t numbers_count, ...);
 
 size_t
-hashids_encode(hashids_t *hashids, char *buffer,
-    size_t numbers_count, unsigned long long *numbers);
+hashids_encode(struct hashids_t *hashids, char *buffer,
+    size_t numbers_count, hashids_number_t *numbers);
 
 size_t
-hashids_encode_v(hashids_t *hashids, char *buffer,
+hashids_encode_v(struct hashids_t *hashids, char *buffer,
     size_t numbers_count, ...);
 
 size_t
-hashids_encode_one(hashids_t *hashids, char *buffer,
-    unsigned long long number);
+hashids_encode_one(struct hashids_t *hashids, char *buffer,
+    hashids_number_t number);
 
 size_t
-hashids_numbers_count(hashids_t *hashids, char *str);
+hashids_numbers_count(struct hashids_t *hashids, char *str);
 
 size_t
-hashids_decode(hashids_t *hashids, char *str,
-    unsigned long long *numbers);
+hashids_decode(struct hashids_t *hashids, char *str,
+    hashids_number_t *numbers);
 
 size_t
-hashids_encode_hex(hashids_t *hashids, char *buffer,
+hashids_encode_hex(struct hashids_t *hashids, char *buffer,
     const char *hex_str);
 
 size_t
-hashids_decode_hex(hashids_t *hashids, char *str, char *output);
+hashids_decode_hex(struct hashids_t *hashids, char *str, char *output);
 
 #endif

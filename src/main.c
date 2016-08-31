@@ -52,12 +52,12 @@ parse_number(const char *s, char **p)
 int
 main(int argc, char **argv)
 {
-    hashids_t *hashids;
+    struct hashids_t *hashids;
     char *salt = HASHIDS_DEFAULT_SALT, *alphabet = HASHIDS_DEFAULT_ALPHABET,
         *buffer, *p, str[18];
     unsigned int command = COMMAND_ENCODE, hex = 0;
     size_t min_hash_length = HASHIDS_DEFAULT_MIN_HASH_LENGTH, numbers_count;
-    unsigned long long number, *numbers, *numbers_ptr;
+    hashids_number_t number, *numbers, *numbers_ptr;
     int ch, i, j;
 
     static const struct option longopts[] = {
@@ -140,7 +140,7 @@ main(int argc, char **argv)
     if (command == COMMAND_ENCODE) {
         /* hex mode */
         if (hex) {
-            number = (unsigned long long)-1;
+            number = (hashids_number_t)-1;
             buffer = calloc(hashids_estimate_encoded_size(hashids, 1, &number),
                 1);
 
@@ -162,7 +162,7 @@ main(int argc, char **argv)
 
         /* collect numbers */
         numbers_count = argc - optind;
-        numbers = calloc(numbers_count, sizeof(unsigned long long));
+        numbers = calloc(numbers_count, sizeof(hashids_number_t));
         numbers_ptr = numbers;
 
         if (!numbers) {
@@ -231,7 +231,7 @@ main(int argc, char **argv)
             return EXIT_FAILURE;
         }
 
-        numbers = calloc(numbers_count, sizeof(unsigned long long));
+        numbers = calloc(numbers_count, sizeof(hashids_number_t));
 
         if (!numbers) {
             printf("Cannot allocate memory for numbers\n");
@@ -242,7 +242,7 @@ main(int argc, char **argv)
         hashids_decode(hashids, argv[i], numbers);
 
         for (j = 0; j < numbers_count; ++j) {
-            printf("%llu", numbers[j]);
+            printf("%ju", numbers[j]);
             if (j + 1 < numbers_count) {
                 printf(" ");
             }
