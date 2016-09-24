@@ -24,7 +24,75 @@ struct testcase_t testcases[] = {
     {"", 0, HASHIDS_DEFAULT_ALPHABET, 1,
         {12345ull}, "j0gW"},
     {"", 0, HASHIDS_DEFAULT_ALPHABET, 1,
+        {22ull}, "Lw"},
+    {"", 0, HASHIDS_DEFAULT_ALPHABET, 1,
+        {333ull}, "Z0E"},
+    {"", 0, HASHIDS_DEFAULT_ALPHABET, 1,
+        {9999ull}, "w0rR"},
+    {"", 0, HASHIDS_DEFAULT_ALPHABET, 1,
         {18446744073709551615ull}, "AOo9Ql5nQR1VO"},
+    {"", 0, HASHIDS_DEFAULT_ALPHABET, 4,
+        {683ull, 94108ull, 123ull, 5ull}, "vJvi7On9cXGtD"},
+    {"", 0, HASHIDS_DEFAULT_ALPHABET, 3,
+        {1ull, 2ull, 3ull}, "o2fXhV"},
+    {"", 0, HASHIDS_DEFAULT_ALPHABET, 3,
+        {2ull, 4ull, 6ull}, "xGhmsW"},
+    {"", 0, HASHIDS_DEFAULT_ALPHABET, 2,
+        {99ull, 25ull}, "3lKfD"},
+
+    {"Arbitrary string", 0, HASHIDS_DEFAULT_ALPHABET, 4,
+        {683ull, 94108ull, 123ull, 5ull}, "QWyf8yboH7KT2"},
+    {"Arbitrary string", 0, HASHIDS_DEFAULT_ALPHABET, 3,
+        {1ull, 2ull, 3ull}, "neHrCa"},
+    {"Arbitrary string", 0, HASHIDS_DEFAULT_ALPHABET, 3,
+        {2ull, 4ull, 6ull}, "LRCgf2"},
+    {"Arbitrary string", 0, HASHIDS_DEFAULT_ALPHABET, 2,
+        {99ull, 25ull}, "JOMh1"},
+
+    {"", 0, "!\"#%&',-/0123456789:;<=>ABCDEFGHIJKLMNOPQRSTUVWXYZ_`abcdefghijklmnopqrstuvwxyz~", 4,
+        {2839ull, 12ull, 32ull, 5ull}, "_nJUNTVU3"},
+    {"", 0, "!\"#%&',-/0123456789:;<=>ABCDEFGHIJKLMNOPQRSTUVWXYZ_`abcdefghijklmnopqrstuvwxyz~", 3,
+        {1ull, 2ull, 3ull}, "7xfYh2"},
+    {"", 0, "!\"#%&',-/0123456789:;<=>ABCDEFGHIJKLMNOPQRSTUVWXYZ_`abcdefghijklmnopqrstuvwxyz~", 1,
+        {23832ull}, "Z6R>"},
+    {"", 0, "!\"#%&',-/0123456789:;<=>ABCDEFGHIJKLMNOPQRSTUVWXYZ_`abcdefghijklmnopqrstuvwxyz~", 2,
+        {99ull, 25ull}, "AYyIB"},
+
+    {"", 25, HASHIDS_DEFAULT_ALPHABET, 3,
+        {7452ull, 2967ull, 21401ull}, "pO3K69b86jzc6krI416enr2B5"},
+    {"", 25, HASHIDS_DEFAULT_ALPHABET, 3,
+        {1ull, 2ull, 3ull}, "gyOwl4B97bo2fXhVaDR0Znjrq"},
+    {"", 25, HASHIDS_DEFAULT_ALPHABET, 1,
+        {6097ull}, "Nz7x3VXyMYerRmWeOBQn6LlRG"},
+    {"", 25, HASHIDS_DEFAULT_ALPHABET, 2,
+        {99ull, 25ull}, "k91nqP3RBe3lKfDaLJrvy8XjV"},
+
+    {"arbitrary salt", 16, "abcdefghijklmnopqrstuvwxyz", 3,
+        {7452ull, 2967ull, 21401ull}, "wygqxeunkatjgkrw"},
+    {"arbitrary salt", 16, "abcdefghijklmnopqrstuvwxyz", 3,
+        {1ull, 2ull, 3ull}, "pnovxlaxuriowydb"},
+    {"arbitrary salt", 16, "abcdefghijklmnopqrstuvwxyz", 1,
+        {60125ull}, "jkbgxljrjxmlaonp"},
+    {"arbitrary salt", 16, "abcdefghijklmnopqrstuvwxyz", 2,
+        {99ull, 25ull}, "erdjpwrgouoxlvbx"},
+
+    {"", 0, "abdegjklmnopqrvwxyzABDEGJKLMNOPQRVWXYZ1234567890", 3,
+        {7452ull, 2967ull, 21401ull}, "X50Yg6VPoAO4"},
+    {"", 0, "abdegjklmnopqrvwxyzABDEGJKLMNOPQRVWXYZ1234567890", 3,
+        {1ull, 2ull, 3ull}, "GAbDdR"},
+    {"", 0, "abdegjklmnopqrvwxyzABDEGJKLMNOPQRVWXYZ1234567890", 1,
+        {60125ull}, "5NMPD"},
+    {"", 0, "abdegjklmnopqrvwxyzABDEGJKLMNOPQRVWXYZ1234567890", 2,
+        {99ull, 25ull}, "yGya5"},
+
+    {"", 0, "abdegjklmnopqrvwxyzABDEGJKLMNOPQRVWXYZ1234567890uC", 3,
+        {7452ull, 2967ull, 21401ull}, "GJNNmKYzbPBw"},
+    {"", 0, "abdegjklmnopqrvwxyzABDEGJKLMNOPQRVWXYZ1234567890uC", 3,
+        {1ull, 2ull, 3ull}, "DQCXa4"},
+    {"", 0, "abdegjklmnopqrvwxyzABDEGJKLMNOPQRVWXYZ1234567890uC", 1,
+        {60125ull}, "38V1D"},
+    {"", 0, "abdegjklmnopqrvwxyzABDEGJKLMNOPQRVWXYZ1234567890uC", 2,
+        {99ull, 25ull}, "373az"},
 
     {"this is my salt", 0, HASHIDS_DEFAULT_ALPHABET, 1,
         {1ull}, "NV"},
@@ -119,6 +187,7 @@ struct testcase_t testcases[] = {
         "wzkJnB79DWXLlNp0jk8mJMK5qyw4QMLGNrJRvWx792Ezqm35nVEyPz9RGl0jrgW3"
         "BnOZkD4pXRxnmvN0QWP21DEwgq4JABlZ59MzV74nKGAjp6rgvY3p8ywGk"},
 
+
     {NULL, 0, NULL, 0, {0ull}, NULL}
 };
 
@@ -145,15 +214,15 @@ f(const char *fmt, ...)
 int
 main(int argc, char **argv)
 {
-    hashids_t *hashids;
-    char *buffer;
-    size_t i, j, result;
-    unsigned long long numbers[16];
-    struct testcase_t testcase;
-    int fail;
-
+    size_t i, j;
     /* walk test cases */
     for (i = 0, j = 0;; ++i) {
+        hashids_t *hashids = NULL;
+        char *buffer = NULL;
+        size_t result;
+        unsigned long long numbers[16];
+        struct testcase_t testcase;
+        int fail;
         fail = 0;
 
         if (i && i % 72 == 0) {
@@ -226,6 +295,12 @@ main(int argc, char **argv)
             goto test_end;
         }
 
+        if (result < testcase.min_hash_length) {
+          fail = 1;
+          failures[j++] = f("#%04d: hashids_encode() returned %u. Minimal hash length is %u", i + 1, result, testcase.min_hash_length);
+          goto test_end;
+        }
+
         /* compare encoded string */
         if (strcmp(buffer, testcase.expected_hash) != 0) {
             fail = 1;
@@ -260,11 +335,9 @@ test_end:
 
         if (hashids) {
             hashids_free(hashids);
-            hashids = NULL;
         }
         if (buffer) {
             free(buffer);
-            buffer = NULL;
         }
     }
 
